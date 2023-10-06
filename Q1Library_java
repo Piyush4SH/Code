@@ -1,0 +1,171 @@
+/**
+ * Library
+ */
+/*Create a
+class named
+Book with
+the following attributes:
+
+title (String): The title of the book.
+availableCopies (int): The number of available copies of the book in the library.
+Create a class named Library that represents a library. It should have the following methods:
+
+addBook(String title, int initialCopies): Adds a book to the library with the specified title and the given initial number of copies.
+loanBook(String title): Simulates lending a book. Decrease the number of available copies for the specified book title by one.
+returnBook(String title): Simulates returning a book. Increase the number of available copies for the specified book title by one.
+Implement the following exception handling in the Library class:
+
+If a user tries to loan a book that is not in the library or if there are no available copies, throw a custom exception BookUnavailableException with an appropriate message.
+If a user tries to return a book that the library does not have, throw a custom exception BookNotFoundException with an appropriate message.
+Create a class named LibraryApp with a main method where you will:
+
+Create an instance of the Library class.
+Add several books to the library using the addBook method.
+Simulate loaning and returning books, handling exceptions gracefully, and displaying appropriate error messages.
+Create two custom exception classes:
+
+BookUnavailableException: This exception should extend Exception. It should have a constructor that takes a message as a parameter and passes it to the superclass constructor.
+
+BookNotFoundException: This exception should extend Exception. It should have a constructor that takes a message as a parameter and passes it to the superclass constructor.
+*/
+import java.util.*;
+//Custom exception classes
+class BookUnavailableException extends Exception {
+ public BookUnavailableException(String message) {
+     super(message);
+ }
+}
+
+class BookNotFoundException extends Exception {
+ public BookNotFoundException(String message) {
+     super(message);
+ }
+}
+
+//Book class
+class Book {
+ private String title;
+ private int availableCopies;
+
+ public Book(String title, int initialCopies) {
+     this.title = title;
+     this.availableCopies = initialCopies;
+ }
+
+ public String getTitle() {
+     return title;
+ }
+
+ public int getAvailableCopies() {
+     return availableCopies;
+ }
+
+ public void decreaseCopies() {
+     availableCopies--;
+ }
+
+ public void increaseCopies() {
+     availableCopies++;
+ }
+}
+
+//Library class
+class Library {
+ private List<Book> books;
+
+ public Library() {
+     this.books = new ArrayList<>();
+ }
+
+ public void addBook(String title, int initialCopies) {
+     Book newBook = new Book(title, initialCopies);
+     books.add(newBook);
+ }
+
+ public void loanBook(String title) throws BookUnavailableException, BookNotFoundException {
+     Book book = findBook(title);
+     
+     if (book == null) {
+         throw new BookNotFoundException("Book not found: " + title);
+     }
+
+     if (book.getAvailableCopies() <= 0) {
+         throw new BookUnavailableException("No available copies of the book: " + title);
+     }
+
+     book.decreaseCopies();
+ }
+
+ public void returnBook(String title) throws BookNotFoundException {
+     Book book = findBook(title);
+
+     if (book == null) {
+         throw new BookNotFoundException("Book not found: " + title);
+     }
+
+     book.increaseCopies();
+ }
+
+ private Book findBook(String title) {
+     for (Book book : books) {
+         if (book.getTitle().equals(title)) {
+             return book;
+         }
+     }
+     return null;
+ }
+}
+
+public class Library1 {
+    
+
+   public static void main(String[] args) {
+        Library library = new Library();
+       Scanner scanner = new Scanner(System.in);
+    //  library.addBook("The Great Gatsby", 5);
+    //     library.addBook("To Kill a Mockingbird", 3);
+    //     library.addBook("1984", 7);
+       // Prompt the user to add books to the library
+       System.out.println("Add books to the library (Enter 'quit' to stop):");
+       while (true) {
+           System.out.print("Enter the book title: ");
+           String bookTitle = scanner.nextLine();
+           if (bookTitle.equalsIgnoreCase("quit")) {
+               break; // Exit the loop if the user enters "quit"
+           }
+
+           System.out.print("Enter the quantity: ");
+           int quantity = Integer.parseInt(scanner.nextLine());
+
+           library.addBook(bookTitle, quantity);
+       }
+
+       // Simulating loaning and returning books with exception handling
+       try {
+           System.out.print("Enter the book title to loan: ");
+           String loanedBookTitle = scanner.nextLine();
+           library.loanBook(loanedBookTitle);
+
+           System.out.print("Enter the book title to return: ");
+           String returnedBookTitle = scanner.nextLine();
+           library.returnBook(returnedBookTitle);
+
+           System.out.print("Enter the book title to loan: ");
+           loanedBookTitle = scanner.nextLine();
+           library.loanBook(loanedBookTitle);
+
+           System.out.print("Enter the book title to loan: ");
+           loanedBookTitle = scanner.nextLine();
+           library.loanBook(loanedBookTitle); // This should throw BookNotFoundException
+
+           System.out.print("Enter the book title to loan: ");
+           loanedBookTitle = scanner.nextLine();
+           library.loanBook(loanedBookTitle); // This should throw BookUnavailableException
+       } catch (BookNotFoundException | BookUnavailableException e) {
+           System.out.println("Error: " + e.getMessage());
+       } finally {
+           scanner.close();
+       }
+    }
+    
+}
